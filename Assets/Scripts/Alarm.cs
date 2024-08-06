@@ -22,7 +22,7 @@ public class Alarm : MonoBehaviour
         _isPlaying = false;
         StartCoroutine(DecreaseVolume(_minVolume));
 
-        if (_alarmSound.volume == 0)
+        if (_alarmSound.volume <= 0)
         {
             ResetVolume();
         }
@@ -30,6 +30,7 @@ public class Alarm : MonoBehaviour
 
     private IEnumerator IncreaseVolume(float targetVolume)
     {
+        _alarmSound.volume = _minVolume;
         _alarmSound.Play();
 
         WaitForSeconds wait = new WaitForSeconds(_delay);
@@ -39,7 +40,6 @@ public class Alarm : MonoBehaviour
             if (_alarmSound.volume < targetVolume)
             {
                 _alarmSound.volume += _stepOfVolumeAlteration;
-                Debug.Log("slowly increasing " + _alarmSound.volume);
             }
             else { break; }
 
@@ -60,6 +60,8 @@ public class Alarm : MonoBehaviour
             else
             {
                 _alarmSound.Stop();
+                StopAllCoroutines();
+
                 break;
             }
 
@@ -70,6 +72,5 @@ public class Alarm : MonoBehaviour
     private void ResetVolume()
     {
         _alarmSound.volume = 0f;
-        StopAllCoroutines();
     }
 }
