@@ -4,12 +4,12 @@ using UnityEngine;
 public class Alarm : MonoBehaviour
 {
     [SerializeField] private AudioSource _alarmSound;
-    private float _volume = 0f;
 
     private float _minVolume = 0f;
     private float _maxVolume = 1f;
     private bool _isPlaying = false;
     private float _delay = 0.5f;
+    private float _stepOfVolumeAlteration = 0.1f;
 
     public void TurnAlarmOn()
     {
@@ -38,8 +38,7 @@ public class Alarm : MonoBehaviour
         {
             if (_alarmSound.volume < targetVolume)
             {
-                //_volume += 0.1f;
-                _alarmSound.volume += 0.1f;
+                _alarmSound.volume += _stepOfVolumeAlteration;
                 Debug.Log("slowly increasing " + _alarmSound.volume);
             }
             else { break; }
@@ -56,9 +55,7 @@ public class Alarm : MonoBehaviour
         {
             if (_alarmSound.volume > targetVolume)
             {
-                //_volume -= 0.1f;
-                _alarmSound.volume -= 0.1f;
-                Debug.Log("slowly fading " + _alarmSound.volume);
+                _alarmSound.volume -= _stepOfVolumeAlteration;
             }
             else
             {
@@ -68,8 +65,6 @@ public class Alarm : MonoBehaviour
 
             yield return wait;
         }
-
-        Debug.Log("while decreasing is ended");
     }
 
     private void ResetVolume()
