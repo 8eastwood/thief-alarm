@@ -37,11 +37,7 @@ public class Alarm : MonoBehaviour
 
         while (_isPlaying == true)
         {
-            if (_alarmSound.volume < targetVolume)
-            {
-                _alarmSound.volume += _stepOfVolumeAlteration;
-            }
-            else { break; }
+            _alarmSound.volume = Mathf.MoveTowards(_alarmSound.volume, targetVolume, _stepOfVolumeAlteration);
 
             yield return wait;
         }
@@ -55,7 +51,7 @@ public class Alarm : MonoBehaviour
         {
             if (_alarmSound.volume > targetVolume)
             {
-                _alarmSound.volume -= _stepOfVolumeAlteration;
+                _alarmSound.volume = Mathf.MoveTowards(_alarmSound.volume, targetVolume, _stepOfVolumeAlteration);
             }
             else
             {
