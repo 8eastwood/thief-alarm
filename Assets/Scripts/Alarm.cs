@@ -13,55 +13,39 @@ public class Alarm : MonoBehaviour
 
     public void TurnAlarmOn()
     {
-        _isPlaying = true;
-        StartCoroutine(IncreaseVolume(_maxVolume));
+        StartCoroutine(ChangeAlarmVolume(_maxVolume));
     }
 
     public void TurnAlarmOff()
     {
-        _isPlaying = false;
-        StartCoroutine(DecreaseVolume(_minVolume));
+        StartCoroutine(ChangeAlarmVolume(_minVolume));
 
-        if (_alarmSound.volume <= 0)
+        if (_alarmSound.volume <= _minVolume)
         {
             ResetVolume();
         }
     }
 
-    private IEnumerator IncreaseVolume(float targetVolume)
+    private IEnumerator ChangeAlarmVolume(float targetVolume)
     {
-        _alarmSound.volume = _minVolume;
-        _alarmSound.Play();
-
         WaitForSeconds wait = new WaitForSeconds(_delay);
 
-        while (_isPlaying == true)
+        if (_alarmSound.isPlaying == false)
+        {
+            _alarmSound.Play();
+        }
+
+        while (_alarmSound.volume != targetVolume)
         {
             _alarmSound.volume = Mathf.MoveTowards(_alarmSound.volume, targetVolume, _stepOfVolumeAlteration);
 
             yield return wait;
         }
-    }
 
-    private IEnumerator DecreaseVolume(float targetVolume)
-    {
-        WaitForSeconds wait = new WaitForSeconds(_delay);
-
-        while (_isPlaying == false)
+        if (_alarmSound.volume <= _minVolume)
         {
-            if (_alarmSound.volume > targetVolume)
-            {
-                _alarmSound.volume = Mathf.MoveTowards(_alarmSound.volume, targetVolume, _stepOfVolumeAlteration);
-            }
-            else
-            {
-                _alarmSound.Stop();
-                StopAllCoroutines();
-
-                break;
-            }
-
-            yield return wait;
+            _alarmSound.Stop();
+            StopAllCoroutines();
         }
     }
 
