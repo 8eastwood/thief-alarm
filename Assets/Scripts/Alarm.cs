@@ -7,17 +7,28 @@ public class Alarm : MonoBehaviour
 
     private float _minVolume = 0f;
     private float _maxVolume = 1f;
-    private bool _isPlaying = false;
     private float _delay = 0.5f;
     private float _stepOfVolumeAlteration = 0.1f;
 
+    private Coroutine _coroutine;
+
     public void TurnAlarmOn()
     {
-        StartCoroutine(ChangeAlarmVolume(_maxVolume));
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+        }
+
+        _coroutine = StartCoroutine(ChangeAlarmVolume(_maxVolume));
     }
 
     public void TurnAlarmOff()
     {
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+        }
+
         StartCoroutine(ChangeAlarmVolume(_minVolume));
 
         if (_alarmSound.volume <= _minVolume)
@@ -38,7 +49,7 @@ public class Alarm : MonoBehaviour
         while (_alarmSound.volume != targetVolume)
         {
             _alarmSound.volume = Mathf.MoveTowards(_alarmSound.volume, targetVolume, _stepOfVolumeAlteration);
-
+            
             yield return wait;
         }
 
